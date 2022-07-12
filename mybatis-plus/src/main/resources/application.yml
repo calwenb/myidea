@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    # 配置数据源
+    username: root
+    password: 123456
+    url: jdbc:mysql://127.0.0.1:3306/test?serverTimezone=Hongkong&useAffectedRows=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis-plus:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  type-aliases-package: com.wen.mybatisplus.pojo
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
