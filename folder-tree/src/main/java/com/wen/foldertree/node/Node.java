@@ -41,4 +41,12 @@ public class Node {
     public void setChildNode(List<Node> childNode) {
         this.childNode = childNode;
     }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "Id=" + Id +
+                ", childNode=" + childNode +
+                '}';
+    }
 }

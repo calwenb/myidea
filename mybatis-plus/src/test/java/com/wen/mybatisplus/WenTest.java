@@ -1,5 +1,8 @@
 package com.wen.mybatisplus;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wen.mybatisplus.mapper.UserMapper;
 import com.wen.mybatisplus.pojo.User;
 import org.junit.jupiter.api.Test;
@@ -65,5 +68,11 @@ public class WenTest {
         System.out.println(TimeUnit.MILLISECONDS.toSeconds(time) + " s");
         System.out.println("start=================");
         System.out.println(capacity);
+    }
+
+    @Test
+    void t1() {
+        Wrapper<User> tWrapper = new QueryWrapper<>();
+        userMapper.selectList(tWrapper);
     }
 }
