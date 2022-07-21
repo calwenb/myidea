@@ -19,6 +19,7 @@ public class WenTest {
     @Test
     void addGigData() {
 
+
         int capacity = (int) Math.pow(2, 20);
         ArrayList<User> list = new ArrayList<>(capacity);
         int i1 = capacity;
