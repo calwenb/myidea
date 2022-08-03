@@ -21,8 +21,10 @@ public class Main {
         map.put(3, 1);
         map.put(4, 2);
         map.put(5, 1);
+        Test test = new Test();
+        test.t2(map);
 
-
+/*
         Node head = new Node(-1);
         map.forEach((k, v) -> {
 
@@ -43,7 +45,8 @@ public class Main {
         System.out.println();
         tpMap.forEach((k, v) -> {
             System.out.println(k + "   " + v);
-        });
+        });*/
+
 
     }
 }
