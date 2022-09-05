@@ -53,7 +53,7 @@ public class ResultUtil {
                 .exception(exception)
                 .message(message)
                 .build();
-        return buildErrorVO(ResultEnum.EXCEPTION.getCode(), null, dataError);
+        return buildErrorVO(ResultEnum.EXCEPTION.getCode(), ResultEnum.EXCEPTION.getMessage(), dataError);
     }
 
 
