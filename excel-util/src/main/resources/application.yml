@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    # 配置数据源
+    url: jdbc:mysql://101.43.95.238:3306/my_pan_test?serverTimezone=Hongkong&useAffectedRows=true
+    username: root
+    password: WHL531124
+    driver-class-name: com.mysql.cj.jdbc.Driver
