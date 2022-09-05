@@ -1,17 +1,19 @@
 package com.wen.backresult.vo;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Data
-@NoArgsConstructor
+@Builder
 @AllArgsConstructor
-@Accessors(chain = true)
-public class Result<T> {
+@NoArgsConstructor
+public class ResultVO<T> {
     private Integer code;
-    private String message;
     private T data;
-
+    private String message;
+    private Boolean success;
+    private DataError dataError;
 }
