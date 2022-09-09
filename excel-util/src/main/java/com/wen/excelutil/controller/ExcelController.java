@@ -33,16 +33,12 @@ public class ExcelController {
     public void export(HttpServletResponse response) throws IOException {
         List<MyFile> list = fileService.listAll();
         list.forEach(System.out::println);
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        String fileName = URLEncoder.encode("测试.xlsx", "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName);
+
         List<String> head = new ArrayList<>();
         head.add("wen1");
         head.add("wen2");
-        ExcelUtil.init("wen", head, list)
+        ExcelUtil.init("wen.csv", head, list)
                 .write(response);
-
 
 //        List<String> head = new ArrayList<>();
 //        head.add("wen1");
