@@ -15,6 +15,7 @@
         <module>oom</module>
         <module>folder-tree</module>
         <module>md</module>
+        <module>web-magic-test</module>
     </modules>
 
     <properties>

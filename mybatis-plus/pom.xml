@@ -17,6 +17,11 @@
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>io.github.calwenb</groupId>
+            <artifactId>releasedao-spring-boot-starter</artifactId>
+            <version>1.0.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

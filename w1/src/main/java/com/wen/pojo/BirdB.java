@@ -1,9 +1,9 @@
 package com.wen.pojo;
 
-public class BirdB extends Bird {
+public class BirdB implements Bird {
 
     @Override
     public void fly() {
-        super.fly();
+        System.out.println("no fly");
     }
 }

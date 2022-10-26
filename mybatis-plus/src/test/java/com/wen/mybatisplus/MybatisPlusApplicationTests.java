@@ -1,22 +1,24 @@
 package com.wen.mybatisplus;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wen.mybatisplus.mapper.UserMapper;
 import com.wen.mybatisplus.pojo.User;
-import jdk.nashorn.internal.runtime.JSONFunctions;
+import com.wen.releasedao.core.mapper.BaseMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @SpringBootTest
 class MybatisPlusApplicationTests {
     @Autowired
     UserMapper userMapper;
+    @Resource
+    BaseMapper baseMapper;
 
     @Test
     void contextLoads() {
@@ -24,10 +26,12 @@ class MybatisPlusApplicationTests {
 
     @Test
     void t1() {
-        for (int i = 0; i < 50; i++) {
-            User user = new User(100 + i, "wen", "123", 15 + i);
-            userMapper.insert(user);
-        }
+        User user = baseMapper.selectTarget(User.class);
+        System.out.println(user);
+//        for (int i = 0; i < 50; i++) {
+//            User user = new User(100 + i, "wen", "123", 15 + i);
+//            userMapper.insert(user);
+//        }
     }
 
     @Test
@@ -101,7 +105,7 @@ class MybatisPlusApplicationTests {
     @Test
     void t10() {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("username", "admin").or().eq("age",37)
+        wrapper.eq("username", "admin").or().eq("age", 37)
                 .select("username");
         List<User> users = userMapper.selectList(wrapper);
         users.forEach(System.out::println);
