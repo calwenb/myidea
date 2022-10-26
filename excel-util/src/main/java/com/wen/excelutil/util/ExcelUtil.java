@@ -11,6 +11,8 @@ import org.apache.poi.ss.formula.functions.T;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +30,13 @@ public class ExcelUtil {
         private List<T> data;
         private Long size;
 
+
         public void write(HttpServletResponse resp) {
             try (ExcelWriter writer = EasyExcel.write(resp.getOutputStream()).build()) {
+                resp.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                resp.setCharacterEncoding("utf-8");
+                String fileName = URLEncoder.encode(name, "UTF-8").replaceAll("\\+", "%20");
+                resp.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName);
                 WriteSheet sheet = EasyExcel.writerSheet("sheet").build();
                 ArrayList<List<String>> head = new ArrayList<>();
                 head.add(this.head);
