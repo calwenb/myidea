@@ -6,8 +6,11 @@ public class Main {
     public static void main(String[] args) {
         Spider.create(new MovieSpider())
                 .addUrl("https://www.ygdy8.net/html/gndy/dyzz/index.html")
+                .addPipeline(new MovieDBPipeline())
                 .thread(5)
                 .run();
+
+        System.out.println(new MovieSpider().count);
     }
 
 
