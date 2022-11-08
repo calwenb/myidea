@@ -1,3 +1,4 @@
+/*
 package com.wen.webmagic.demo5;
 
 import us.codecraft.webmagic.Task;
@@ -9,3 +10,4 @@ public class MovieLogPipeline implements PageModelPipeline<LieTouJobInfo> {
 
     }
 }
+*/
