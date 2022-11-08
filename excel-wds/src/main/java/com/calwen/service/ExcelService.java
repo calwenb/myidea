@@ -36,6 +36,9 @@ public class ExcelService {
                     nameI = h.indexOf("材料领用名称");
                     versionI = h.indexOf("规格及型号");
                     userI = h.indexOf("实际消耗量");
+                    if (userI == -1) {
+                        userI = h.indexOf("实消耗量");
+                    }
                     returnUse = h.indexOf("退库数量");
                     isData = true;
                     continue;
