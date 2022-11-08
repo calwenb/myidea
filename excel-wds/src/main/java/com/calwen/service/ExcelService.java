@@ -48,8 +48,6 @@ public class ExcelService {
                     if (h.get(0).equals(h.get(1))) {
                         break;
                     }
-                    System.out.println(h);
-                    System.out.println(key);
                     Resource model = new Resource();
                     model.setName(String.valueOf(h.get(nameI)));
                     model.setVersion(String.valueOf(h.get(versionI)));
@@ -61,11 +59,10 @@ public class ExcelService {
 
             map.put(key, list);
         }
-        System.out.println(map);
         map.forEach((k, v) -> {
             System.out.println("=======> k:  " + k);
-          /*  System.out.print("=======> v:  ");
-            v.forEach(System.out::println);*/
+            System.out.println("=======> v:  ");
+            v.forEach(System.out::println);
         });
 
         return map;
