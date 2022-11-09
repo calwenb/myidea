@@ -1,12 +1,15 @@
 package com.calwen.service;
 
+
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.calwen.entity.Resource;
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+import org.apache.commons.compress.utils.Lists;
 
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,13 +20,14 @@ import java.util.stream.Collectors;
  * @since 2022/11/8
  */
 public class ExcelService {
+    String baseDir = "C:\\Users\\Mr.wen\\Desktop\\bb\\tp\\";
 
     public HashMap<String, List<Resource>> readResource() {
         HashMap<String, List<Resource>> map = new HashMap<>();
 
         for (int s = 1; s < 10; s++) {
             String key = "";
-            ExcelReader reader = ExcelUtil.getReader(FileUtil.file("E:\\wen-other\\个人\\1.xls"), s);
+            ExcelReader reader = ExcelUtil.getReader(FileUtil.file(baseDir + "1.xls"), s);
             List<List<Object>> data = reader.read();
             List<Resource> list = new ArrayList<>();
             boolean isData = false;
@@ -71,8 +75,8 @@ public class ExcelService {
     }
 
     public List<Map<String, Object>> readTarget() {
-        ExcelReader reader = ExcelUtil.getReader(FileUtil.file("E:\\wen-other\\个人\\2.xlsx"));
-        List<Map<String, Object>> map = reader.read(0, 1, Integer.MAX_VALUE);
+        ExcelReader reader = ExcelUtil.getReader(FileUtil.file(baseDir + "2.xls"));
+        List<Map<String, Object>> map = reader.readAll();
         map = map.stream().filter(e -> {
             if (StrUtil.isBlank(String.valueOf(e.get("合同编号")))) {
                 return false;
@@ -84,6 +88,131 @@ public class ExcelService {
         map.forEach(System.out::println);
         return map;
     }
+
+    public List<Map<String, Object>> handle2() {
+        HashMap<String, List<Resource>> resourceSheet = readResource();
+        System.out.println("数据分割 ============");
+        List<Map<String, Object>> targetList = readTarget();
+        System.out.println("开始处理 ===========");
+        List<Map<String, Object>> rsList = new ArrayList<>();
+        for (String projectName : resourceSheet.keySet()) {
+            System.out.println("==========");
+            Map<String, Object> map = new LinkedHashMap<>();
+//            String projectName = String.valueOf(row.get("工程名称"));
+//            int max = -1;
+//            String maxStr = "-1";
+//            for (String s : resourceSheet.keySet()) {
+//                int i = FuzzySearch.partialRatio(s, projectName);
+//                if (i > max) {
+//                    max = i;
+//                    maxStr = s;
+//                }
+//            }
+//            System.out.println(max);
+//            System.out.println(maxStr + "   " + projectName);
+            List<Resource> resourceList = resourceSheet.get(projectName);
+            map.put("工程名称", projectName);
+            for (Resource resource : resourceList) {
+                String resourceName = resource.getName();
+                String version = resource.getVersion();
+                String resourceKey = resourceName + version;
+                Double use = resource.getUse();
+                map.put(resourceKey, use);
+            }
+
+            rsList.add(map);
+        }
+//        for (Map<String, Object> row : targetList) {
+//            System.out.println("==========");
+//            Map<String, Object> map = new LinkedHashMap<>();
+//            String projectName = String.valueOf(row.get("工程名称"));
+////            int max = -1;
+////            String maxStr = "-1";
+////            for (String s : resourceSheet.keySet()) {
+////                int i = FuzzySearch.partialRatio(s, projectName);
+////                if (i > max) {
+////                    max = i;
+////                    maxStr = s;
+////                }
+////            }
+////            System.out.println(max);
+////            System.out.println(maxStr + "   " + projectName);
+//            List<Resource> resourceList = resourceSheet.get(maxStr);
+//            if (resourceList == null) {
+//                System.out.println("000000000000");
+////                System.out.println(projectName);
+//                continue;
+//            }
+//            map.put("工程名称", projectName);
+//            for (Resource resource : resourceList) {
+//                String resourceName = resource.getName();
+//                String version = resource.getVersion();
+//                String resourceKey = resourceName + version;
+//                Double use = resource.getUse();
+//                map.put(resourceKey, use);
+//            }
+//
+//            rsList.add(map);
+//        }
+        System.out.println("rsList ======");
+        rsList.forEach(System.out::println);
+
+
+        HashSet<String> keys = new HashSet<>();
+        for (Map<String, Object> map : rsList) {
+            keys.addAll(map.keySet());
+        }
+        int c = 0;
+        System.out.println(keys.size());
+        System.out.println(rsList.size());
+        for (Map<String, Object> map : rsList) {
+//            Object id = map.get("序号");
+//            Object htId = map.get("合同编号");
+//            Object pName = map.get("工程名称");
+//            map.clear();
+//            map.put("序号", id);
+//            map.put("合同编号", htId);
+//            map.put("工程名称", pName);
+//
+            for (String key : keys) {
+                c++;
+                if (!map.containsKey(key)) {
+                    map.put(key, "");
+                    continue;
+                }
+
+            }
+        }
+
+        System.out.println("rsList new  ======");
+        rsList.forEach(System.out::println);
+        System.out.println(c);
+
+        return rsList;
+    }
+
+    public void save() {
+        List<Map<String, Object>> data = handle2();
+        ExcelReader reader = ExcelUtil.getReader(FileUtil.file(baseDir + "2.xls"));
+        List<Map<String, Object>> maps = reader.readAll();
+        int i = 0;
+        for (Map<String, Object> map : maps) {
+            if (i >= data.size()) {
+                break;
+            }
+//            System.out.println(map);
+            System.out.println(data.get(i));
+            map.putAll(data.get(i));
+            i++;
+        }
+        System.out.println(maps);
+        ExcelWriter writer = ExcelUtil.getWriter(baseDir + "3.xls");
+        writer.write(maps, true);
+        writer.close();
+
+    }
+
+    private int count = 0;
 
     public void handle() {
         HashMap<String, List<Resource>> resourceMap = readResource();
@@ -105,38 +234,66 @@ public class ExcelService {
                 String resourceKey = resourceName + version;
                 Double use = resource.getUse();
                 String matchKey = match(row, resourceKey);
-                map.put(matchKey, use);
+                if (StrUtil.isNotBlank(matchKey)) {
+                    map.put(matchKey, use);
+                }
             }
             rsList.add(map);
         }
         System.out.println("rsList ======");
         rsList.forEach(System.out::println);
+//        System.out.println(count);
+        HashSet<String> keys = new HashSet<>();
+        for (Map<String, Object> map : rsList) {
+            keys.addAll(map.keySet());
+        }
+        for (Map<String, Object> map : rsList) {
+            for (String key : keys) {
+                if (!map.containsKey(key)) {
+                    map.put(key, "");
+                }
+            }
+        }
 
+        System.out.println("rsList new  ======");
+        rsList.forEach(System.out::println);
     }
 
     private String match(Map<String, Object> map, String resourceName) {
         String maxKey = "";
-        float MaxLeve = -1;
+        // float MaxLeve = -1;
+        int maxInt = -1;
         resourceName = rep(resourceName);
         for (String key : map.keySet()) {
             key = rep(key);
-            float levenshtein = levenshtein(key, resourceName);
-            if (levenshtein > MaxLeve) {
+            int ratio = FuzzySearch.partialRatio(key, resourceName);
+            if (ratio > maxInt) {
                 maxKey = key;
-                MaxLeve = levenshtein;
+                maxInt = ratio;
             }
+//            System.out.println(ratio);
+//            float levenshtein = levenshtein(key, resourceName);
+//            if (levenshtein > MaxLeve) {
+//                maxKey = key;
+//                MaxLeve = levenshtein;
+//            }
 //            if (levenshtein > 0.8) {
 //                System.out.println("====> key " + key + "   " + resourceName);
 //                System.out.println(levenshtein);
 //            }
         }
-
-
-        if (MaxLeve > 0.8) {
-            System.out.println(MaxLeve);
+//
+//        if (MaxLeve < 0.3) {
+//            System.out.println(MaxLeve);
+//            System.out.println(maxKey + "  " + resourceName);
+//        }
+        if (maxInt < 90) {
+            count++;
+            System.out.println("==============");
             System.out.println(maxKey + "  " + resourceName);
+            System.out.println(maxInt);
         }
-        return maxKey;
+        return maxInt > 95 ? maxKey : "";
 
     }
 
@@ -149,58 +306,6 @@ public class ExcelService {
             sb.append(matcher.group(0));
         }
         return sb.toString();
-    }
-
-    public float levenshtein(String str1, String str2) {
-        //计算两个字符串的长度。
-        int len1 = str1.length();
-        int len2 = str2.length();
-        //建立上面说的数组，比字符长度大一个空间
-        int[][] dif = new int[len1 + 1][len2 + 1];
-        //赋初值，步骤B。
-        for (int a = 0; a <= len1; a++) {
-            dif[a][0] = a;
-        }
-        for (int a = 0; a <= len2; a++) {
-            dif[0][a] = a;
-        }
-        //计算两个字符是否一样，计算左上的值
-        int temp;
-        for (int i = 1; i <= len1; i++) {
-            for (int j = 1; j <= len2; j++) {
-                if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
-                    temp = 0;
-                } else {
-                    temp = 1;
-                }
-                //取三个值中最小的
-                dif[i][j] = min(dif[i - 1][j - 1] + temp, dif[i][j - 1] + 1, dif[i - 1][j] + 1);
-            }
-        }
-//        System.out.println("   " + str1 + "\"  与   \"   " + str2 + "   \"的比较");
-        //取数组右下角的值，同样不同位置代表不同字符串的比较
-//        System.out.println("差异步骤：" + dif[len1][len2]);
-        //计算相似度
-        float similarity = 1 - (float) dif[len1][len2] / Math.max(str1.length(), str2.length());
-        return similarity;
-//        System.out.println("相似度："+getPercentValue(similarity));
-    }
-
-    public String getPercentValue(float similarity) {
-        NumberFormat fmt = NumberFormat.getPercentInstance();
-        fmt.setMaximumFractionDigits(2);//最多两位百分小数，如25.23%
-        return fmt.format(similarity);
-    }
-
-    //得到最小值
-    private int min(int... is) {
-        int min = Integer.MAX_VALUE;
-        for (int i : is) {
-            if (min > i) {
-                min = i;
-            }
-        }
-        return min;
     }
 
 }

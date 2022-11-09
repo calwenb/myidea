@@ -16,5 +16,6 @@ public class Resource {
     private String name;
     private String version;
     private Double use;
+    private String id;
     private Double returnUse;
 }
