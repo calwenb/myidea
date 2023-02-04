@@ -8,8 +8,6 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.calwen.entity.Resource;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
-import org.apache.commons.compress.utils.Lists;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,11 +63,11 @@ public class ExcelService {
 
             map.put(key, list);
         }
-        map.forEach((k, v) -> {
-            System.out.println("=======> k:  " + k);
-            System.out.println("=======> v:  ");
-            v.forEach(System.out::println);
-        });
+//        map.forEach((k, v) -> {
+//            System.out.println("=======> k:  " + k);
+//            System.out.println("=======> v:  ");
+//            v.forEach(System.out::println);
+//        });
 
         return map;
     }
@@ -96,64 +94,19 @@ public class ExcelService {
         System.out.println("开始处理 ===========");
         List<Map<String, Object>> rsList = new ArrayList<>();
         for (String projectName : resourceSheet.keySet()) {
-            System.out.println("==========");
             Map<String, Object> map = new LinkedHashMap<>();
-//            String projectName = String.valueOf(row.get("工程名称"));
-//            int max = -1;
-//            String maxStr = "-1";
-//            for (String s : resourceSheet.keySet()) {
-//                int i = FuzzySearch.partialRatio(s, projectName);
-//                if (i > max) {
-//                    max = i;
-//                    maxStr = s;
-//                }
-//            }
-//            System.out.println(max);
-//            System.out.println(maxStr + "   " + projectName);
             List<Resource> resourceList = resourceSheet.get(projectName);
             map.put("工程名称", projectName);
             for (Resource resource : resourceList) {
                 String resourceName = resource.getName();
                 String version = resource.getVersion();
-                String resourceKey = resourceName + version;
+                String resourceKey = resourceName +" - "+ version;
                 Double use = resource.getUse();
                 map.put(resourceKey, use);
             }
 
             rsList.add(map);
         }
-//        for (Map<String, Object> row : targetList) {
-//            System.out.println("==========");
-//            Map<String, Object> map = new LinkedHashMap<>();
-//            String projectName = String.valueOf(row.get("工程名称"));
-////            int max = -1;
-////            String maxStr = "-1";
-////            for (String s : resourceSheet.keySet()) {
-////                int i = FuzzySearch.partialRatio(s, projectName);
-////                if (i > max) {
-////                    max = i;
-////                    maxStr = s;
-////                }
-////            }
-////            System.out.println(max);
-////            System.out.println(maxStr + "   " + projectName);
-//            List<Resource> resourceList = resourceSheet.get(maxStr);
-//            if (resourceList == null) {
-//                System.out.println("000000000000");
-////                System.out.println(projectName);
-//                continue;
-//            }
-//            map.put("工程名称", projectName);
-//            for (Resource resource : resourceList) {
-//                String resourceName = resource.getName();
-//                String version = resource.getVersion();
-//                String resourceKey = resourceName + version;
-//                Double use = resource.getUse();
-//                map.put(resourceKey, use);
-//            }
-//
-//            rsList.add(map);
-//        }
         System.out.println("rsList ======");
         rsList.forEach(System.out::println);
 
@@ -166,14 +119,6 @@ public class ExcelService {
         System.out.println(keys.size());
         System.out.println(rsList.size());
         for (Map<String, Object> map : rsList) {
-//            Object id = map.get("序号");
-//            Object htId = map.get("合同编号");
-//            Object pName = map.get("工程名称");
-//            map.clear();
-//            map.put("序号", id);
-//            map.put("合同编号", htId);
-//            map.put("工程名称", pName);
-//
             for (String key : keys) {
                 c++;
                 if (!map.containsKey(key)) {
@@ -201,11 +146,13 @@ public class ExcelService {
                 break;
             }
 //            System.out.println(map);
-            System.out.println(data.get(i));
+            map.remove("");
             map.putAll(data.get(i));
             i++;
         }
-        System.out.println(maps);
+        for (Map<String, Object> map : maps) {
+            System.out.println(map);
+        }
         ExcelWriter writer = ExcelUtil.getWriter(baseDir + "3.xls");
         writer.write(maps, true);
         writer.close();

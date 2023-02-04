@@ -17,6 +17,8 @@
         <module>md</module>
         <module>web-magic-test</module>
         <module>excel-wds</module>
+        <module>mq</module>
+        <module>io</module>
     </modules>
 
     <properties>
